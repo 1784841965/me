@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nCov-2019</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/vue.js"></script>
+    <script src="./js/jQuery/jquery-1.12.3.min.js"></script>
+    <script src="./js/rem.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 首页 -->
+        <div v-show='tab==1'>
+            <!-- 头部子组件 -->
+            <comptop>
+                <span slot='left' class="top_left">
+                  <a href="./index.html">首页</a>
+                </span>
+            </comptop>
+            <!-- 首页新闻子组件 -->
+            <compcenter></compcenter>
+        </div>
+
+
+        <!-- 辟谣页 -->
+        <div v-show='tab==2'>
+            <!-- 头部子组件 -->
+            <comptop>
+                <span slot='left' class="top_left">
+                  <a href="#">辟谣</a>
+                </span>
+            </comptop>
+            <div class="two_box">
+                <!-- 辟谣新闻上方内容 -->
+                <twocomp></twocomp>
+                <!-- 辟谣新闻 -->
+                <twocenter></twocenter>
+            </div>
+        </div>
+
+
+        <!-- 防护合辑 -->
+        <div v-show='tab==3'>
+            <!-- 头部子组件 -->
+            <comptop>
+                <span slot='left' class="top_left">
+                  <a href="./index.html">防护</a>
+                </span>
+            </comptop>
+
+            <!-- 下拉选项 -->
+            <streecomp></streecomp>
+
+            <streebottom></streebottom>
+        </div>
+
+
+        <!-- 疾病知识 -->
+        <div v-show='tab==4'>
+            <!-- 头部子组件 -->
+            <comptop>
+                <span slot='left' class="top_left">
+                  <a href="./index.html">疾病</a>
+                </span>
+            </comptop>
+            <lastcomp></lastcomp>
+        </div>
+
+
+        <!-- 底部导航条 -->
+        <div class="tabbar">
+            <div v-for='(item,index) in tabbar' @click='tabbars(index)' class="Tab">
+                <img :src="item.img" alt="">
+                <p>{{item.name}}</p>
+            </div>
+            <div class="none"></div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <template id='comptop'>
+        <div class="top">
+            <slot name='left'></slot>
+            <span><a href="">开源地址</a></span>
+        </div>
+    </template>
+
+    <!-- 首页新闻 -->
+    <template id='compcenter'>
+      <div class="compcenter">
+         <div v-for='(item,index) in news' class="oneitem" @click='itemnews(item.sourceUrl)'>
+            <p class="title">
+              <span v-if='index==0' class="icon">最新</span>{{item.title}}
+            </p>
+            <span class="test">{{item.summary}}</span>
+            <p class="bx">
+              <span>{{item.pubDateStr}}</span>
+              <span>来源:{{item.infoSource}}</span>
+            </p>
+         </div>
+      </div>
+  </template>
+
+    <!-- 辟谣页子组件 -->
+    <template id='twocomp'>
+        <div class="comp">
+          <p class="two_top">
+            <span class="tj"></span><b>全国统计</b>
+            <span>{{new Date(obj.createTime).toLocaleString()}}</span>
+          </p>
+          <div class="yq">
+            <span style="color:red">{{obj.confirmedCount}}</span>
+            <span>全国确诊</span>
+          </div>
+          <div class="yq">
+            <span style="color:#fec301">{{obj.confirmedIncr}}</span>
+            <span>疑似病例</span>
+          </div>
+          <div class="yq"> 
+            <span style="color:#55b45c">{{obj.curedCount}}</span>
+            <span>治愈人数</span>
+          </div>
+          <div class="yq">
+            <span style="color:#c2c3c3">{{obj.curedIncr}}</span>
+            <span>死亡人数</span>
+          </div>
+          <div class="futu">
+              <div style="margin-bottom: 20px;">
+                  <div v-for='(item,index) in name' style="margin-bottom: 10px;">
+                  <p>
+                    <img src="./img/f0.png" style="width: 17px;height: 18px;margin-right: 5px;" v-if='index<3'>
+                    <img src="./img/f1.png" style="width: 17px;height: 18px;margin-right: 5px;" v-else>
+                    <span style="font-size: 14px;">{{item}}:</span>
+                  </p>
+                  <li style="font-size: 14px;">{{content[index]}}</li>
+                </div>
+              </div>
+              <div class="ditu">
+                <p class="two_top">
+                  <span class="tj"></span><b>疫情地图</b>
+                  <span style="float:right;font-size: 14px;color:#c2c3c3">数据来源：国家及各省市地区卫健委</span>
+                </p>
+                <img src="http://49.232.173.220:3001/images/distribution-nationale.png" alt="">
+              </div>
+              <img v-for='item in obj.dailyPics' :src="item" style="width: 100%;">
+              <div>
+                <p class="two_top">
+                  <span class="tj"></span><b>诊疗</b>
+                </br>
+                <a href="http://mp.weixin.qq.com/s?__biz=MzI3MzI4NDM2MQ==&mid=100017262&idx=1&sn=a594fbad05a4eab8c72d58ef74e113ea&chksm=6b2728085c50a11eaf092f2ddddc99a0927429d2bfc10e4c1e5cdf3f859ee380a7014dbbf655#rd">
+                  <img src="./img/zhenliao.png" style="width: 90px;height: 90px;outline: none;">
+                </a>
+                </p>
+              </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="twocenter">
+      <div class="twocenter">
+        <p class="two_top">
+          <span class="tj"></span><b>辟谣</b>
+          <span style="float:right;font-size: 14px;color:#c2c3c3">消息数量：{{list.length}}</span>
+        </p>
+          <div class="waibu" v-for='(item,index) in list'>
+            {{item.title}}
+            <div class="neibu">
+              <p class="txt">{{item.mainSummary}}</p>
+              <p class="silde">{{item.body}}</p>
+              <p class="dj">
+                <span @click='zhankaiitem(index)' style="cursor: pointer;outline: none;">展开详情</span>
+                <span style="cursor: pointer;">👇</span>
+              </p>
+            </div>
+          </div>
+      </div>
+    </template>
+    <!-- 防护逻辑 -->
+    <template id="streecomp">
+      <div class="streecomp">
+        <div class="stree_top">
+          <p class="two_top">
+            <span class="tj"></span><b>地区统计</b>
+          </p>
+          <p class="sispan">
+            <span style="width: 22%;">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;区</span>
+            <span>确&nbsp;&nbsp;&nbsp;诊</span>
+            <span>死&nbsp;&nbsp;&nbsp;亡</span>
+            <span>治&nbsp;&nbsp;&nbsp;愈</span>
+          </p>
+        </div>
+        <hr>
+        <hr>
+        <div class="stree_center">
+          <div v-for='(item,index) in list'>
+            <li>
+              <span style="width: 25%;">{{item.provinceName}}</span>
+              <span>{{item.currentConfirmedCount}}</span>
+              <span>{{item.deadCount}}</span>
+              <span>{{item.curedCount}}</span>
+              <span @click='itemcity(item.provinceName)' style="cursor: pointer;">👆</span>
+            </li>
+            <!-- 如果点击传送的城市名与请求的城市名一致时显示 每条数据中的城市名都不同 这样能避免重复,多次添加 -->
+            <div class="citys">
+             <li  v-for='(city,key) in citys'  v-if='name==item.provinceName'>
+                <span style="width: 25%;">{{city.cityName}}</span>
+                <span>{{city.currentConfirmedCount}}</span>
+                <span>{{city.deadCount}}</span>
+                <span>{{city.curedCount}}</span>
+            </li>
+          </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template id="streebottom">
+      <div class="streebottom">
+          <div v-for='item in list' class="fivediv" @click='cn(item.linkUrl)'> 
+            <p>
+              <b>{{item.title}}</b>
+              <img :src="item.imgUrl" alt="">
+            </p>
+            <p>{{new Date(item.createTime).toLocaleString()}}</p>
+          </div>
+      </div>
+    </template>
+    <template id="lastcomp">
+      <div class="lastcomp">
+          <div v-for='(item,index) in list' class="boss" @click='mt(item.linkUrl)'>
+              <div v-if='item.imgUrl!=""' class="urldiv">
+                <img :src="item.imgUrl" alt="">
+              </div>   
+              <div :class='[index<1?"widthdiv":"salcdiv"]'> 
+                <p class="titleA">{{item.title}}</p>
+                <p class="titleB">{{item.description}}</p>
+              </div>      
+          </div>
+      </div>
+    </template>
+    <script>
+        //头部
+        var comptop = {
+            template: '#comptop'
+        };
+        //首页新闻
+        var compcenter = {
+            template: '#compcenter',
+            data() {
+                return {
+                    news: [],
+                }
+            },
+            mounted: function() {
+                fetch('http://49.232.173.220:3001/data/getTimelineService').then((res) => {
+                    res.json().then((data) => {
+                        // console.log(data)
+                        this.news = data;
+                    })
+                })
+            },
+            methods: {
+                itemnews(url) {
+                    location.href = '' + url;
+                }
+            },
+        };
+        //辟谣页
+        let twocomp = {
+            template: '#twocomp',
+            data() {
+                return {
+                    obj: '',
+                    name: [],
+                    content: [],
+                }
+            },
+            mounted: function() {
+                fetch('http://49.232.173.220:3001/data/getStatisticsService').then((res) => {
+                    res.json().then((data) => {
+                        // console.log(data)
+                        this.obj = data;
+                        // console.log(this.obj)
+                    })
+                })
+            },
+            watch: {
+                obj: function(newVal) {
+                    //分割字符串 将名字与内容分别分割添加到两个不同的数组中
+                    let addname = (a, index) => {
+                        this.name.push(a.split('：')[index])
+                        this.content.push(a.split('：')[index + 1])
+                    };
+                    addname(this.obj.note1, 0);
+                    addname(this.obj.note2, 0);
+                    addname(this.obj.note3, 0);
+                    addname(this.obj.remark1, 0);
+                    addname(this.obj.remark2, 0);
+                    addname(this.obj.remark3, 0);
+                }
+            },
+        };
+        //辟谣消息
+        let twocenter = {
+            template: '#twocenter',
+            data() {
+                return {
+                    list: [],
+                }
+            },
+            mounted() {
+                fetch('http://49.232.173.220:3001/data/getIndexRumorList').then((res) => {
+                    res.json().then((data) => {
+                        // console.log(data);
+                        //将数据中的信息给数组list
+                        this.list = data;
+                    })
+                })
+            },
+            methods: {
+                zhankaiitem(index) {
+                    var e = event;
+                    $(e.target.parentNode.previousElementSibling).slideToggle("slow");
+                    // console.log(e)
+                    if (e.toElement.innerHTML == '展开详情') {
+                        e.toElement.innerHTML = '收起详情'
+                        e.target.nextElementSibling.innerHTML = '👆'
+                    } else {
+                        e.toElement.innerHTML = '展开详情'
+                        e.target.nextElementSibling.innerHTML = '👇'
+                    }
+                }
+            },
+        };
+        let streecomp = {
+            template: '#streecomp',
+            data() {
+                return {
+                    //存放各大城市疫情信息
+                    list: [],
+                    //存放各大城市中的市区疫情信息
+                    citys: false,
+                    name: ''
+                }
+            },
+            mounted: function() {
+                fetch('http://49.232.173.220:3001/data/getListByCountryTypeService1').then((res) => {
+                    res.json().then((data) => {
+                        // console.log(data);
+                        this.list = data;
+                        // console.log(this.obj)
+                    })
+                });
+
+            },
+            methods: {
+                itemcity(name) {
+                    let e = event;
+                    // console.log(name)
+                    this.name = name;
+                    new Promise((resolve, reject) => {
+                        fetch('http://49.232.173.220:3001/data/getAreaStat/' + name).then((res) => {
+                            res.json().then((data) => {
+                                // console.log(data);
+                                this.citys = data[0].cities;
+                                var success = 111;
+                                resolve(success)
+                            })
+                        });
+                    });
+                    if (e.toElement.innerHTML == '👆' && this.citys) {
+                        $(e.target.parentNode.nextElementSibling).css('display', 'block');
+                        e.toElement.innerHTML = '👇';
+                        $(e.target.parentNode.childNodes).filter(function(index, item) {
+                            if (item.nodeType == 1) {
+                                $(item)[0].style.color = 'blue';
+                            }
+                        });
+                    } else {
+                        $(e.target.parentNode.nextElementSibling).css('display', 'none');
+                        e.toElement.innerHTML = '👆';
+                        $(e.target.parentNode.childNodes).filter(function(index, item) {
+                            if (item.nodeType == 1) {
+                                $(item)[0].style.color = '#000000';
+                            }
+                        });
+                    }
+                }
+            },
+        };
+        let streebottom = {
+            template: '#streebottom',
+            data() {
+                return {
+                    list: [],
+                }
+            },
+            mounted() {
+                fetch('http://49.232.173.220:3001/data/getIndexRecommendList').then((res) => {
+                    res.json().then((data) => {
+                        console.log(data);
+                        this.list = data;
+                        // console.log(this.obj)
+                    })
+                });
+            },
+            methods: {
+                cn(url) {
+                    location.href = '' + url;
+                }
+            },
+        };
+        let lastcomp = {
+            template: '#lastcomp',
+            data() {
+                return {
+                    list: [],
+                }
+            },
+            mounted: function() {
+                fetch('http://49.232.173.220:3001/data/getWikiList').then((res) => {
+                    res.json().then((data) => {
+                        // console.log('最新知识百科', data);
+                        this.list = data.result;
+                    })
+                })
+            },
+            methods: {
+                mt(url) {
+                    location.href = '' + url;
+                }
+            }
+        }
+        new Vue({
+            el: '#app',
+            data: {
+                tab: 1,
+                tabbar: [{
+                    img: './img/shouye1.png',
+                    name: '首页'
+                }, {
+                    img: './img/piyao.png',
+                    name: '辟谣'
+                }, {
+                    img: './img/fanghu.png',
+                    name: '防护逻辑'
+                }, {
+                    img: './img/zhishi.png',
+                    name: '疾病知识'
+                }],
+            },
+            methods: {
+                tabbars(index) {
+                    this.tab = index + 1;
+                    // console.log(this.tab)
+                    var img = ['./img/shouye.png', './img/piyao.png', './img/fanghu.png', './img/zhishi.png'];
+                    var img1 = ['./img/shouye1.png', './img/piyao1.png', './img/fanghu1.png', './img/zhishi1.png'];
+                    this.tabbar.forEach((item, index) => {
+                        item.img = img[index]
+                    });
+                    this.tabbar[index].img = img1[index];
+                }
+            },
+            components: {
+                comptop,
+                compcenter,
+                twocomp,
+                twocenter,
+                streecomp,
+                streebottom,
+                lastcomp,
+            }
+        })
+    </script>
+    <script src="./js/index.js"></script>
+</body>
+
+</html>
